@@ -1,0 +1,103 @@
+import fs from "fs";
+import { AmazonIntent } from "../config";
+
+export interface GoldenSample {
+  id: string;
+  customer_text: string;
+  ground_truth_intent: AmazonIntent;
+  ground_truth_escalation: "AUTO_HANDLE" | "ESCALATE";
+  escalation_reason: string;
+  expected_key_elements: string[];
+  human_baseline_quality: number; // 1 to 5 score for human evaluation correlation
+}
+
+// Sample seed representing real Twitter queries to @AmazonHelp
+export const GOLDEN_SET: GoldenSample[] = [
+  // 1. ORDER_TRACKING_DELIVERY
+  {
+    id: "gold_001",
+    customer_text: "@AmazonHelp my package was supposed to arrive by 8 PM today but it still says 'out for delivery'. Any updates?",
+    ground_truth_intent: "ORDER_TRACKING_DELIVERY",
+    ground_truth_escalation: "AUTO_HANDLE",
+    escalation_reason: "Standard delivery window inquiry; customer can check real-time courier tracking link.",
+    expected_key_elements: ["Apologize for delay", "Mention tracking link on Your Orders page", "Advise waiting till end of day"],
+    human_baseline_quality: 5
+  },
+  {
+    id: "gold_002",
+    customer_text: "@AmazonHelp driver marked my order #114-892348-192 as delivered on porch, but there is nothing here. Checked with neighbors too. Stolen??",
+    ground_truth_intent: "ORDER_TRACKING_DELIVERY",
+    ground_truth_escalation: "ESCALATE",
+    escalation_reason: "Missing/stolen package with specific Order ID requires internal carrier investigation and replacement/refund.",
+    expected_key_elements: ["Acknowledge missing item", "Do not share personal details publicly", "Escalate to direct agent via DM/help page"],
+    human_baseline_quality: 5
+  },
+  // 2. RETURN_REFUND_REPLACEMENT
+  {
+    id: "gold_003",
+    customer_text: "@AmazonHelp What is the return window for an opened electric kettle bought last week?",
+    ground_truth_intent: "RETURN_REFUND_REPLACEMENT",
+    ground_truth_escalation: "AUTO_HANDLE",
+    escalation_reason: "Standard policy inquiry resolvable with public guidelines.",
+    expected_key_elements: ["State 30-day return policy", "Direct to Online Returns Center"],
+    human_baseline_quality: 5
+  },
+  {
+    id: "gold_004",
+    customer_text: "@AmazonHelp I received shattered glass inside the box! Almost cut my hand. I want an immediate replacement without having to send back dangerous glass.",
+    ground_truth_intent: "RETURN_REFUND_REPLACEMENT",
+    ground_truth_escalation: "ESCALATE",
+    escalation_reason: "Damaged item + safety hazard requires agent override of standard return-pickup requirement.",
+    expected_key_elements: ["Express safety concern", "Apologize for broken item", "Transfer to agent for return-less refund/replacement"],
+    human_baseline_quality: 4
+  },
+  // 3. ACCOUNT_SECURITY_LOGIN
+  {
+    id: "gold_005",
+    customer_text: "@AmazonHelp I got an email saying my password was changed from an IP in Russia. I didn't authorize this, please help!",
+    ground_truth_intent: "ACCOUNT_SECURITY_LOGIN",
+    ground_truth_escalation: "ESCALATE",
+    escalation_reason: "Account compromise / security breach requires immediate credential lockout.",
+    expected_key_elements: ["Treat with high urgency", "Direct to secure compromised account flow", "Never ask for credentials on Twitter"],
+    human_baseline_quality: 5
+  },
+  // 4. DIGITAL_PRIME_SERVICES
+  {
+    id: "gold_006",
+    customer_text: "@AmazonHelp Prime Video keeps throwing error code 5004 on my Samsung smart TV. Other streaming apps work fine.",
+    ground_truth_intent: "DIGITAL_PRIME_SERVICES",
+    ground_truth_escalation: "AUTO_HANDLE",
+    escalation_reason: "Standard app troubleshooting resolvable with cache clearing or reinstall steps.",
+    expected_key_elements: ["Acknowledge error 5004", "Recommend clearing app cache / restarting TV", "Verify account sign-in"],
+    human_baseline_quality: 4
+  },
+  // 5. PRODUCT_INQUIRY_STOCK
+  {
+    id: "gold_007",
+    customer_text: "@AmazonHelp Does the Kindle Paperwhite come with the USB-C charging cable in the box?",
+    ground_truth_intent: "PRODUCT_INQUIRY_STOCK",
+    ground_truth_escalation: "AUTO_HANDLE",
+    escalation_reason: "Public product spec question.",
+    expected_key_elements: ["Confirm included accessories", "Link to product detail specifications page"],
+    human_baseline_quality: 5
+  },
+  // 6. FEEDBACK_OR_CHITCHAT
+  {
+    id: "gold_008",
+    customer_text: "@AmazonHelp Shoutout to the delivery driver in Seattle who left my package under the mat during the rain storm! Great job.",
+    ground_truth_intent: "FEEDBACK_OR_CHITCHAT",
+    ground_truth_escalation: "AUTO_HANDLE",
+    escalation_reason: "Positive praise with no actionable support issue.",
+    expected_key_elements: ["Express appreciation for feedback", "Warm brand closing"],
+    human_baseline_quality: 5
+  }
+];
+
+export function writeGoldenSet(): void {
+  fs.writeFileSync("../data/golden_eval_set.json", JSON.stringify(GOLDEN_SET, null, 2));
+  console.log(`Initialized golden evaluation set at ../data/golden_eval_set.json`);
+}
+
+if (require.main === module) {
+  writeGoldenSet();
+}

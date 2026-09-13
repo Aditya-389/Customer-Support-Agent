@@ -1,0 +1,27 @@
+{
+  "name": "hiver-amazon-agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "data:prep": "npx tsx src/data/prepare_data.ts",
+    "data:golden": "npx tsx src/data/create_golden_set.ts",
+    "eval": "npx tsx src/run_eval.ts"
+  },
+  "keywords": [],
+  "author": "Aditya Chouhan",
+  "license": "ISC",
+  "dependencies": {
+    "@ai-sdk/google": "^4.0.69",
+    "@ai-sdk/groq": "^4.0.41",
+    "ai": "^7.0.99",
+    "csv-parser": "^3.2.1",
+    "dotenv": "^17.4.2",
+    "zod": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.2",
+    "tsx": "^4.23.13",
+    "typescript": "^7.0.2"
+  }
+}

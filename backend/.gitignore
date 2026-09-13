@@ -1,0 +1,65 @@
+
+# ==========================================
+# 🛑 SENSITIVE DATA (Never commit these!)
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ==========================================
+# 📦 DEPENDENCIES & PACKAGE MANAGERS
+# ==========================================
+node_modules/
+jspm_packages/
+web_modules/
+vendor/
+.pnp/
+.pnp.js
+
+# ==========================================
+# 🏗️ BUILD OUTPUTS & CACHES
+# ==========================================
+dist/
+build/
+out/
+bin/
+obj/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# ==========================================
+# 📝 LOGS AND DIAGNOSTICS
+# ==========================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+.stylelintcache
+
+# ==========================================
+# 💻 IDEs & EDITORS (VS Code, IntelliJ, etc.)
+# ==========================================
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# ==========================================
+# 🍏/🪟 OPERATING SYSTEM SYSTEM FILES
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
